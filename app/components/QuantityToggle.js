@@ -6,7 +6,7 @@ import useCartStore from '../../lib/store';
 export default function QuantityToggle({ item, initialQuantity = 0, showQuickAdd = true }) {
   const [quantity, setQuantity] = useState(initialQuantity);
   const [showControls, setShowControls] = useState(initialQuantity > 0);
-  const { addItem, removeItem, items } = useCartStore();
+  const { addItem, removeItem, items, updateQuantity } = useCartStore();
 
   useEffect(() => {
     // Find item in cart and get its quantity
@@ -29,7 +29,10 @@ export default function QuantityToggle({ item, initialQuantity = 0, showQuickAdd
           removeItem(cartItem.cartId);
         }
       } else {
-        addItem(item, newQuantity);
+        const cartItem = items.find(cartItem => cartItem.id === item.id);
+        if (cartItem) {
+          updateQuantity(cartItem.cartId, newQuantity);
+        }
       }
     }
   };
@@ -37,7 +40,7 @@ export default function QuantityToggle({ item, initialQuantity = 0, showQuickAdd
   const handleIncrease = () => {
     const newQuantity = quantity + 1;
     setQuantity(newQuantity);
-    addItem(item, newQuantity);
+    addItem(item, 1);
   };
 
   const handleQuickAdd = () => {
